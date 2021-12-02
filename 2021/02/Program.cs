@@ -3,9 +3,9 @@
 var (horizontal1, depth1) = commands
     .Aggregate((Horizontal: 0, Depth: 0), (acc, cmd) =>
     {
-        var result = ProcessCommand1(cmd);
-        acc.Horizontal += result.Horizontal;
-        acc.Depth += result.Depth;
+        var (horizontal, depth) = ProcessCommand1(cmd);
+        acc.Horizontal += horizontal;
+        acc.Depth += depth;
         return acc;
     });
 Console.WriteLine(horizontal1 * depth1);
@@ -13,10 +13,10 @@ Console.WriteLine(horizontal1 * depth1);
 var (horizontal2, depth2, aim2) = commands
     .Aggregate((Horizontal: 0, Depth: 0, Aim: 0), (acc, cmd) =>
     {
-        var result = ProcessCommand2(cmd, acc.Aim);
-        acc.Horizontal += result.Horizontal;
-        acc.Depth += result.Depth;
-        acc.Aim += result.Aim;
+        var (horizontal, depth, aim) = ProcessCommand2(cmd, acc.Aim);
+        acc.Horizontal += horizontal;
+        acc.Depth += depth;
+        acc.Aim += aim;
         return acc;
     });
 Console.WriteLine(horizontal2 * depth2);
