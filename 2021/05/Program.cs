@@ -57,11 +57,11 @@ foreach (var (x1, y1, x2, y2) in lines)
                 && y >= Math.Min(y1, y2)
                 && y <= Math.Max(y1, y2))
             {
-                if (x1 == x2 || y1 == y2)
+                if (x1 == x2 || y1 == y2) // on straight line
                 {
                     diagram2[x, y]++;
                 }
-                else if (!(x1 == x2 || y1 == y2) && y == m * x + b)
+                else if (y == m * x + b) // on diagional line
                 {
                     diagram2[x, y]++;
                 }
