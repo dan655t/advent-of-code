@@ -2,57 +2,104 @@
 var lines = input
     .Select(i => i.Split(" -> "))
     .Select(i => (Start: i[0].Split(","), End: i[1].Split(",")))
-    .Select(i => new Line
+    .Select(i =>
         (
-            Start: (X: int.Parse(i.Start[0]), Y: int.Parse(i.Start[1])),
-            End: (X: int.Parse(i.End[0]), Y: int.Parse(i.End[1]))
+            X1: int.Parse(i.Start[0]),
+            Y1: int.Parse(i.Start[1]),
+            X2: int.Parse(i.End[0]),
+            Y2: int.Parse(i.End[1])
         ));
 
 var xMax = lines
-    .Select(l => l.Start.X)
-    .Concat(lines.Select(l => l.End.X))
+    .Select(l => l.X1)
+    .Concat(lines.Select(l => l.X2))
     .Max();
 var yMax = lines
-    .Select(l => l.Start.Y)
-    .Concat(lines.Select(l => l.End.Y))
+    .Select(l => l.Y1)
+    .Concat(lines.Select(l => l.Y2))
     .Max();
 
 var diagram = new int[xMax + 1, yMax + 1];
-
-foreach (var line in lines)
+foreach (var (x1, y1, x2, y2) in lines)
 {
-    if (!(line.Start.X == line.End.X || line.Start.Y == line.End.Y))
+    if (!(x1 == x2 || y1 == y2))
     {
-        Console.WriteLine(line);
         continue;
     }
-    for (int x = 0; x < diagram.GetLength(1); x++)
+    for (int x = 0; x < diagram.GetLength(0); x++)
     {
-        for (int y = 0; y < diagram.GetLength(0); y++)
+        for (int y = 0; y < diagram.GetLength(1); y++)
         {
-            if (line.Start.X <= x
-                && line.End.X >= x
-                && line.Start.Y <= y
-                && line.End.Y >= y)
+            if (x >= Math.Min(x1, x2)
+                && x <= Math.Max(x1, x2)
+                && y >= Math.Min(y1, y2)
+                && y <= Math.Max(y1, y2))
             {
                 diagram[x, y]++;
             }
         }
     }
 }
+// PrintDiagram(diagram);
+Console.WriteLine(TwoOrMoreOverlaps(diagram));
 
-PrintDiagram(diagram);
-
-static void PrintDiagram(int[,] diagram)
+var diagram2 = new int[xMax + 1, yMax + 1];
+foreach (var (x1, y1, x2, y2) in lines)
 {
-    for (int x = 0; x < diagram.GetLength(1); x++)
+    var m = Slope(x1, y1, x2, y2);
+    var b = YIntercept(m, x1, y1);
+    for (int x = 0; x < diagram2.GetLength(0); x++)
     {
-        for (int y = 0; y < diagram.GetLength(0); y++)
+        for (int y = 0; y < diagram2.GetLength(1); y++)
         {
-            Console.Write(diagram[x, y]);
+            if (x >= Math.Min(x1, x2)
+                && x <= Math.Max(x1, x2)
+                && y >= Math.Min(y1, y2)
+                && y <= Math.Max(y1, y2))
+            {
+                if (x1 == x2 || y1 == y2)
+                {
+                    diagram2[x, y]++;
+                }
+                else if (!(x1 == x2 || y1 == y2) && y == m * x + b)
+                {
+                    diagram2[x, y]++;
+                }
+            }
         }
-        Console.WriteLine();
     }
 }
+// PrintDiagram(diagram2);
+Console.WriteLine(TwoOrMoreOverlaps(diagram2));
 
-record Line((int X, int Y) Start, (int X, int Y) End);
+static int Slope(int x1, int y1, int x2, int y2) => x2 - x1 == 0 ? 0 : (y2 - y1) / (x2 - x1);
+
+static int YIntercept(int m, int x, int y) => y - m * x;
+
+static int TwoOrMoreOverlaps(int[,] diagram)
+{
+    var overlaps = 0;
+    for (int x = 0; x < diagram.GetLength(0); x++)
+    {
+        for (int y = 0; y < diagram.GetLength(1); y++)
+        {
+            if (diagram[x, y] >= 2)
+            {
+                overlaps++;
+            }
+        }
+    }
+    return overlaps;
+}
+
+// static void PrintDiagram(int[,] diagram)
+// {
+//     for (int y = 0; y < diagram.GetLength(0); y++)
+//     {
+//         for (int x = 0; x < diagram.GetLength(1); x++)
+//         {
+//             Console.Write(diagram[x, y] == 0 ? "." : diagram[x, y]);
+//         }
+//         Console.WriteLine();
+//     }
+// }
