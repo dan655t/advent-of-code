@@ -4,7 +4,7 @@
 
 var fuelCost1 = LowestFuelCost(positions, distance => distance);
 Console.WriteLine(fuelCost1);
-var fuelCost2 = LowestFuelCost(positions, distance => Enumerable.Range(1, distance).Aggregate(0, (acc, x) => acc += x));
+var fuelCost2 = LowestFuelCost(positions, distance => distance * (distance + 1) / 2);
 Console.WriteLine(fuelCost2);
 
 static int LowestFuelCost(IEnumerable<int> positions, Func<int, int> fuelCost)
