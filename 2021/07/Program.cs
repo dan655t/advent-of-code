@@ -9,6 +9,6 @@ Console.WriteLine(fuelCost2);
 
 static int LowestFuelCost(IEnumerable<int> positions, Func<int, int> fuelCost)
     => positions
-        .Select((pos) => positions.Select(dest => fuelCost(Math.Abs(pos - dest))).Sum())
+        .Select(pos => positions.Select(dest => fuelCost(Math.Abs(pos - dest))).Sum())
         .OrderBy(x => x)
         .First();
